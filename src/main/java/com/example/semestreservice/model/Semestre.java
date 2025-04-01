@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDate;
 
 @Data
@@ -17,8 +16,11 @@ public class Semestre {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String nombre;
+    @Column(name = "id_programa", nullable = false)
+    private Long idPrograma;
+
+    @Column(name = "numero_semestre", nullable = false)
+    private Integer numeroSemestre;
 
     @Column(nullable = false)
     private LocalDate fechaInicio;

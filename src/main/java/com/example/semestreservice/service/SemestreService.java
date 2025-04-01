@@ -21,10 +21,11 @@ public class SemestreService {
         validarFechas(request);
 
         Semestre semestre = new Semestre();
-        semestre.setNombre(request.nombre());
+        semestre.setIdPrograma(request.idPrograma());
+        semestre.setNumeroSemestre(request.numeroSemestre());
         semestre.setFechaInicio(request.fechaInicio());
         semestre.setFechaFin(request.fechaFin());
-        semestre.setActivo(request.activo());
+        semestre.setActivo(true); // Por defecto activo al crear
 
         semestre = semestreRepository.save(semestre);
         return mapToResponse(semestre);
@@ -51,10 +52,11 @@ public class SemestreService {
         Semestre semestre = semestreRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Semestre", "id", id));
 
-        semestre.setNombre(request.nombre());
+        semestre.setIdPrograma(request.idPrograma());
+        semestre.setNumeroSemestre(request.numeroSemestre());
         semestre.setFechaInicio(request.fechaInicio());
         semestre.setFechaFin(request.fechaFin());
-        semestre.setActivo(request.activo());
+        // El campo 'activo' no se modifica en actualización
 
         semestre = semestreRepository.save(semestre);
         return mapToResponse(semestre);
@@ -71,7 +73,8 @@ public class SemestreService {
     private SemestreResponse mapToResponse(Semestre semestre) {
         return new SemestreResponse(
                 semestre.getId(),
-                semestre.getNombre(),
+                semestre.getIdPrograma(),
+                semestre.getNumeroSemestre(),
                 semestre.getFechaInicio(),
                 semestre.getFechaFin(),
                 semestre.isActivo()
@@ -82,5 +85,13 @@ public class SemestreService {
         if (request.fechaFin().isBefore(request.fechaInicio())) {
             throw new IllegalArgumentException("La fecha de fin debe ser posterior a la fecha de inicio");
         }
+    }
+
+    // Nuevo método para buscar por programa académico
+    @Transactional(readOnly = true)
+    public List<SemestreResponse> listarSemestresPorPrograma(Long idPrograma) {
+        return semestreRepository.findByIdPrograma(idPrograma).stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 }

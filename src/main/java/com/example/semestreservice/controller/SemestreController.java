@@ -16,6 +16,7 @@ import java.util.List;
 public class SemestreController {
     private final SemestreService semestreService;
 
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public SemestreResponse crearSemestre(@Valid @RequestBody SemestreRequest request) {
